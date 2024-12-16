@@ -27,12 +27,12 @@ const CreateDog: React.FC = () => {
     };
 
     try {
-      const dogImageResult = await axios.get(`https://dog.ceo/api/breeds/image/random`);
+      const dogImageResult = await axios.get(https://dog.ceo/api/breeds/image/random);
       data['image'] = dogImageResult.data.message;
 
-      await axios.post(`https://dogs.kobernyk.com/api/v1/dogs`, data, {
+      await axios.post(https://dogs.kobernyk.com/api/v1/dogs, data, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: Bearer ${token},
         },
       });
 

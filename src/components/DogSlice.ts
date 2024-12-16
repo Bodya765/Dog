@@ -1,46 +1,26 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
-type Dog = {
-  _id: string;
-  name: string;
-  age: number;
-  breed: string;
-  color: string;
-  image?: string;
-};
-
-interface DogsState {
-  dogs: Dog[];
-  loading: boolean;
-  error: string | null;
-}
-
-const initialState: DogsState = {
+const initialState = {
   dogs: [],
   loading: false,
-  error: null,
+  error: '',
 };
 
 const dogsSlice = createSlice({
-  name: "dogs",
+  name: 'dogs',
   initialState,
   reducers: {
-    setDogs: (state, action: PayloadAction<Dog[]>) => {
-      state.dogs = action.payload;
+    addDog(state, action) {
+      state.dogs.push(action.payload); // add dog to the list
     },
-    addDog: (state, action: PayloadAction<Dog>) => {
-      if (!state.dogs.find((dog) => dog._id === action.payload._id)) {
-        state.dogs.push(action.payload);
-      }
-    },
-    setLoading: (state, action: PayloadAction<boolean>) => {
+    setLoading(state, action) {
       state.loading = action.payload;
     },
-    setError: (state, action: PayloadAction<string | null>) => {
+    setError(state, action) {
       state.error = action.payload;
     },
   },
 });
 
-export const { setDogs, addDog, setLoading, setError } = dogsSlice.actions;
+export const { addDog, setLoading, setError } = dogsSlice.actions;  // Ensure this line exists
 export default dogsSlice.reducer;

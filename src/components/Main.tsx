@@ -7,7 +7,6 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { setDogs, setLoading, setError } from '../store/dogsSlice';
 
@@ -26,9 +25,9 @@ const Main = () => {
       return;
     }
     dispatch(setLoading(true));
-    axios.get(`https://dogs.kobernyk.com/api/v1/dogs`, {
+    axios.get(https://dogs.kobernyk.com/api/v1/dogs, {
       headers: {
-        "Authorization": `Bearer ${token}`
+        "Authorization": Bearer ${token}
       }
     })
       .then(response => {
@@ -41,25 +40,6 @@ const Main = () => {
       .finally(() => {
         dispatch(setLoading(false));
       });
-  };
-
-  const deleteDog = (dogId: string) => {
-    axios.delete(`https://dogs.kobernyk.com/api/v1/dogs/${dogId}`, {
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    })
-      .then(() => {
-        dispatch(setDogs(dogs.filter((dog: any) => dog._id !== dogId)));
-        alert('Dog deleted successfully!');
-      })
-      .catch(() => {
-        alert('Failed to delete dog.');
-      });
-  };
-
-  const editDog = (dog: any) => {
-    navigate(`/edit/${dog._id}`, { state: dog });
   };
 
   useEffect(() => {
@@ -77,12 +57,10 @@ const Main = () => {
   if (token) {
     return (
       <>
-        <div className="bg-orange-700 h-5">
-          <div className="text-green-900">Ви авторизовані</div>
-        </div>
+        Ви авторизовані<br />
+        <div className="bg-orange-700 h-5"></div>ен
         <button onClick={logout}>Вийти</button>
         <br />
-        <Link to="/create">Create a Dog</Link>
         {dogs.map((dog: any) => (
           <Card sx={{ maxWidth: 345 }} key={dog._id}>
             <CardMedia
@@ -100,9 +78,7 @@ const Main = () => {
               </Typography>
             </CardContent>
             <CardActions>
-              <Link to={`/${dog._id}`}>Деталі</Link>
-              <Button size="small" onClick={() => editDog(dog)}>Редагувати</Button>
-              <Button size="small" color="error" onClick={() => deleteDog(dog._id)}>Видалити</Button>
+              <Link to={/${dog._id}}>Деталі</Link>
             </CardActions>
           </Card>
         ))}

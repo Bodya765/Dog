@@ -1,14 +1,20 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
-import useLocalStorage from "../effects/useLocalStorage";
 
 const EditDog = () => {
-  const [token] = useLocalStorage('token', '');
   const navigate = useNavigate();
-  const { id } = useParams(); // ID собаки з URL
-  const { state } = useLocation(); // Передані дані про собаку
+  const { id } = useParams();
+  const { state } = useLocation();
   const [dog, setDog] = useState(state || { name: '', age: '', breed: '', color: '' });
+  const [token, setToken] = useState<string>('');
+
+  useEffect(() => {
+    const savedToken = localStorage.getItem('token');
+    if (savedToken) {
+      setToken(savedToken);
+    }
+  }, []);
 
   const fetchDog = async () => {
     if (!state) {
@@ -26,8 +32,10 @@ const EditDog = () => {
   };
 
   useEffect(() => {
-    fetchDog();
-  }, []);
+    if (token) {
+      fetchDog();
+    }
+  }, [token, id, state]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

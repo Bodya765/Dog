@@ -1,59 +1,68 @@
-import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
-import { getDogById } from "../api/dogsApi";
-import { addDog, setLoading, setError } from "../store/dogsSlice";
-import useLocalStorage from "../effects/useLocalStorage";
+import { useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
+import useLocalStorage from '../effects/useLocalStorage';
+import { Link } from 'react-router-dom';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 
 const Dog = () => {
-  const { id } = useParams();
-  const [token] = useLocalStorage("token", "");
-  const dispatch = useDispatch();
-
-  const dog = useSelector((state: any) =>
-    state.dogs.dogs.find((dog: any) => dog._id === id)
+  <div className="bg-orange-600 h-5"></div>
+  const [token, setToken] = useLocalStorage('token', '');
+  const { dogId } = useParams();
+  const dog: any = useSelector((state: RootState) =>
+    state.dogs.dogs.find((dog: any) => dog._id === dogId)
   );
-  const loading = useSelector((state: any) => state.dogs.loading);
-  const error = useSelector((state: any) => state.dogs.error);
+  const loading = useSelector((state: RootState) => state.dogs.loading);
+  const error = useSelector((state: RootState) => state.dogs.error);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchDog = async () => {
-      if (!dog && id) {
-        dispatch(setLoading(true));
-        try {
-          const fetchedDog = await getDogById(id, token);
-          dispatch(addDog(fetchedDog));
-        } catch (err: any) {
-          dispatch(setError(err.message));
-        } finally {
-          dispatch(setLoading(false));
-        }
-      }
-    };
-    fetchDog();
-  }, [dog, id, token, dispatch]);
-
-  if (loading) {
-    return <div>Loading...</div>;
+  const logout = () => {
+    setToken('');
   }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
   if (!dog) {
-    return <div>No dog found.</div>;
+      navigate('/');
   }
 
-  return (
-    <div>
-      <h1>{dog.name}</h1>
-      <p>Age: {dog.age}</p>
-      <p>Breed: {dog.breed}</p>
-      <p>Color: {dog.color}</p>
-      <img src={dog.image} alt={dog.name} />
-    </div>
-  );
-};
+  if (token) {
+    return <>
+      Ви авторизовані<br/>
+      <button onClick={logout}>Вийти</button>
+      <br/>
+      <Link to="/">На головну</Link>
+      {dog && (
+        <Card sx={{ maxWidth: 345 }}>
+          <CardMedia
+            sx={{ height: 140 }}
+            image={dog.image}
+            title="green iguana"
+          />
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="div">
+              {dog.name}
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              Колір: {dog.color}<br/>
+              Порода: {dog.breed}
+            </Typography>
+          </CardContent>
+          <CardActions>
+            <Button size="small">Деталі</Button>
+          </CardActions>
+        </Card>
+      )}
+    </>
+  } else {
+    return <>
+      <Link to="/login">Авторизуватися</Link>
+    </>
+  }
+}
 
 export default Dog;
